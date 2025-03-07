@@ -80,7 +80,7 @@ def obtain_engine_config() -> (
         return "old-streaming"
     if settings.run.polars_new_streaming:
         return "streaming"
-    if not settings.polars_gpu:
+    if not settings.run.polars_gpu:
         return "in-memory"
 
     import cudf_polars
@@ -144,11 +144,7 @@ def run_query(query_number: int, lf: pl.LazyFrame) -> None:
 
     engine = obtain_engine_config()
     if settings.run.polars_show_plan:
-        print(
-            lf.explain(
-                engine=engine, optimized=eager
-            )
-        )
+        print(lf.explain(engine=engine, optimized=not eager))
 
     # Eager load engine backend, so we don't time that.
     _preload_engine(engine)
